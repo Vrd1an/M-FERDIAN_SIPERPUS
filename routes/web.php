@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\ProfileController;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,7 +19,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/books',[BookController::class,'index']);
-Route::get('/books/{id}',[BookController::class,'search']);
+Route::group(['middle' => ['role:mahasiswa']], function(){
+    Route::get('/view/books', [BookController::class, 'index']);
+    Route::get('/book/{id}', [BookController::class, 'search']);
+});
+Route::group(['middle' => ['role:mahasiswa']], function(){
+    Route::get('/manage/books', [BookController::class, 'index']);
+    Route::get('/book/{id}', [BookController::class, 'search']);
+});
 
 require __DIR__.'/auth.php';
